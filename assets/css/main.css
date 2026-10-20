@@ -387,10 +387,11 @@
     .faq-title { margin-top: 20px; }
   }
   @media (max-width: 640px) {
-    html { scroll-padding-top: 88px; }
+    html { scroll-padding-top: 104px; }
     .container { width: calc(100% - 40px); }
-    .header-inner { min-height: 76px; }
-    .brand img { width: 138px; height: auto; }
+    .header-inner { min-height: 92px; }
+    .brand img { width: clamp(172px, 50vw, 196px); height: auto; }
+    .primary-navigation { max-height: calc(100svh - 93px); }
     .hero-inner { padding-top: 35px; padding-bottom: 42px; }
     .hero-eyebrow { font-size: .5rem; gap: 9px; margin-bottom: 30px; letter-spacing: .11em; }
     .hero-topline { flex-direction: column; align-items: flex-start; gap: 22px; margin-bottom: 28px; }
