@@ -81,3 +81,47 @@ document.querySelectorAll("[data-copy-target]").forEach((button) => {
 
 const year = document.querySelector("[data-current-year]");
 if (year) year.textContent = String(new Date().getFullYear());
+
+// Miglioramento progressivo: senza supporto a dialog i link aprono il PNG.
+const lightbox = document.querySelector(".screenshot-lightbox");
+
+if (lightbox && typeof lightbox.showModal === "function") {
+  const image = lightbox.querySelector(".lightbox-image");
+  const title = lightbox.querySelector("#lightbox-title");
+  const closeButton = lightbox.querySelector(".lightbox-close");
+  let opener;
+
+  document.querySelectorAll("[data-lightbox]").forEach((link) => {
+    link.setAttribute("aria-haspopup", "dialog");
+    link.addEventListener("click", (event) => {
+      // Mantiene disponibili i comandi nativi per aprire o scaricare il file.
+      if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      const figure = link.closest(".server-view");
+      const original = figure.querySelector(".server-view-image img");
+      event.preventDefault();
+      opener = link;
+      image.width = Number(original.getAttribute("width"));
+      image.height = Number(original.getAttribute("height"));
+      image.src = link.href;
+      image.alt = original.alt;
+      title.textContent = figure.classList.contains("server-view-teamspeak")
+        ? "Dentro CyberLions · TeamSpeak"
+        : "Dentro CyberLions · Discord";
+      lightbox.showModal();
+    });
+  });
+
+  closeButton.addEventListener("click", () => lightbox.close());
+  // Chiude solo se pressione e rilascio avvengono fuori dall’immagine e dall’header.
+  let backdropPress = false;
+  lightbox.addEventListener("pointerdown", (event) => {
+    backdropPress = event.target === lightbox;
+  });
+  lightbox.addEventListener("click", (event) => {
+    if (backdropPress && event.target === lightbox) lightbox.close();
+    backdropPress = false;
+  });
+  lightbox.addEventListener("close", () => {
+    opener?.focus({ preventScroll: true });
+  });
+}
